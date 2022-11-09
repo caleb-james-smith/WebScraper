@@ -1,5 +1,4 @@
-import requests
-from bs4 import BeautifulSoup
+# example.py
 
 # Example web scraper in python3
 # See the tutorial for this example here:
@@ -7,12 +6,16 @@ from bs4 import BeautifulSoup
 # Fake job website used for this example:
 # https://realpython.github.io/fake-jobs/
 
+import requests
+from bs4 import BeautifulSoup
+
 URL             = "https://realpython.github.io/fake-jobs/"
 page            = requests.get(URL)
 soup            = BeautifulSoup(page.content, "html.parser")
 results         = soup.find(id="ResultsContainer")
 job_elements    = results.find_all("div", class_="card-content")
 
+#print(page)
 #print(page.text)
 #print(page.content)
 #print(soup)
