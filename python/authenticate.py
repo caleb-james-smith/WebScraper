@@ -67,6 +67,9 @@ url = "https://github.com/session"
 response = s.post(url, cookies=cookies, headers=headers, data=data)
 print(response)
 
+#response = s.post(url, cookies=cookies, headers=headers, data=data)
+#print(response)
+
 #url = "https://github.com/caleb-james-smith/git-commands"
 #url = "https://github.com/caleb-james-smith/WebScraper"
 #url = "https://github.com/caleb-james-smith/CalebSmithDissertation"
