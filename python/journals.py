@@ -30,12 +30,11 @@ def scrape(url):
     #print(elements)
     #print(len(elements))
 
+    # KU Single Sign-On Page (when off campus)
     login = soup.find(id="fm1")
-
-    # KU Single Sign-On Page
-    print(soup.head.title)
-    print(soup.find("head").find("title"))
-    print(login.h3)
+    print(soup.head.title.text.strip())
+    print(soup.find("head").find("title").text.strip())
+    print(login.h3.text.strip())
 
 def main():
     print("Go go go!")
