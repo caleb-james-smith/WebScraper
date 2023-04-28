@@ -8,6 +8,7 @@ Install the required python3 packages.
 ```
 pip3 install requests
 pip3 install beautifulsoup4
+pip3 install pysocks
 ```
 
 Download the repository:
