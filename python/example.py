@@ -15,12 +15,17 @@ soup            = BeautifulSoup(page.content, "html.parser")
 results         = soup.find(id="ResultsContainer")
 job_elements    = results.find_all("div", class_="card-content")
 
+n_job_elements = len(job_elements)
+
 #print(page)
 #print(page.text)
 #print(page.content)
 #print(soup)
 #print(results.prettify())
 #print(job_elements)
+
+print("Number of job elements: {0}".format(n_job_elements))
+print()
 
 for job_element in job_elements:
     #print(job_element, end="\n"*2)
