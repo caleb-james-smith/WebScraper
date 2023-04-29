@@ -75,6 +75,14 @@ def testTables(URL, proxies):
 
     print("Number of tables: {0}".format(n_tables))
 
+def test(URL, proxies):
+    soup = getSoup(URL, proxies)
+    results = getResults(soup, "xdaq-main")
+    tables = results.find_all("table")
+    n_tables = len(tables)
+    print(tables)
+    print("Number of tables: {0}".format(n_tables))
+
 def main():
     URL = "http://srv-s2b18-37-01.cms:1971/urn:xdaq-application:lid=71"
     proxies = {
@@ -83,7 +91,8 @@ def main():
     }
     #getFEDStatusInfo(URL, proxies)
     #getFEDErrorInfo(URL, proxies)
-    testTables(URL, proxies)
+    #testTables(URL, proxies)
+    test(URL, proxies)
 
 if __name__ == "__main__":
     main()
