@@ -59,11 +59,21 @@ def getFEDErrorInfo(URL, proxies):
     for table in tables:
         title = table.find("p", class_="tcds-item-table-title")
         description = table.find("p", class_="tcds-item-table-description")
-        fed_error_table = table.find("table", class_="xdaq-table tcds-item-table sortable pixelmonitor-table-compact")
         if title:
             print("i = {0}; title = {1}, description = {2}".format(i, title.text, description.text))
-            print(fed_error_table)
         i += 1
+
+def testTables(URL, proxies):
+    soup = getSoup(URL, proxies)
+    tables = soup.find_all("table")
+    n_tables = len(tables)
+
+    print("Classes of each table:")
+
+    for table in tables:
+        print(table.get("class"))
+
+    print("Number of tables: {0}".format(n_tables))
 
 def main():
     URL = "http://srv-s2b18-37-01.cms:1971/urn:xdaq-application:lid=71"
@@ -72,7 +82,8 @@ def main():
         "https": "socks5h://127.0.0.1:1030"
     }
     #getFEDStatusInfo(URL, proxies)
-    getFEDErrorInfo(URL, proxies)
+    #getFEDErrorInfo(URL, proxies)
+    testTables(URL, proxies)
 
 if __name__ == "__main__":
     main()
