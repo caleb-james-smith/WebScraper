@@ -6,6 +6,8 @@
 # https://stackoverflow.com/questions/8287628/proxies-with-python-requests-module
 # https://stackoverflow.com/questions/12601316/how-to-make-python-requests-work-via-socks-proxy
 # https://stackoverflow.com/questions/38794015/pythons-requests-missing-dependencies-for-socks-support-when-using-socks5-fro
+# https://stackoverflow.com/questions/23377533/python-beautifulsoup-parsing-table
+# https://stackoverflow.com/questions/65727862/scraping-table-with-beautifulsoup-how-to-separate-the-elements-with-a-newline
 
 import requests
 from bs4 import BeautifulSoup
@@ -26,19 +28,27 @@ def getElements(results, tag, class_name):
 def getPageInfo(URL, proxies):
     soup = getSoup(URL, proxies)
     results = getResults(soup, "xdaq-main")
-    tables = getElements(results, "table", "pixel-tab-table")
+    #tables = getElements(results, "table", "pixel-tab-table")
+    tables = getElements(results, "table", "pixel-item-table xdaq-table")
+    #tables = getElements(results, "table", "xdaq-table tcds-item-table sortable pixelmonitor-table-compact")
     #tables = results.find_all("table", id="pixelFedTable")
     n_tables = len(tables)
 
+    data = []
     for table in tables:
         body = table.find("tbody")
         rows = body.find_all("tr")
         n_rows = len(rows)
         for row in rows:
-            print(row.text)
-        print("Number of rows: {0}".format(n_rows))
+            columns = row.find_all("td")
+            columns = [element.get_text(separator=": ", strip=True) for element in columns]
+            data.append([element for element in columns if element])
+            for entry in columns:
+                print(entry)
 
     print("Number of tables: {0}".format(n_tables))
+
+    #print(data)
 
 def main():
     URL = "http://srv-s2b18-37-01.cms:1971/urn:xdaq-application:lid=71"
