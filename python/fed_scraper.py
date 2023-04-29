@@ -25,13 +25,10 @@ def getElements(results, tag, class_name):
     elements = results.find_all(tag, class_=class_name)
     return elements
 
-def getPageInfo(URL, proxies):
+def getFEDStatusInfo(URL, proxies):
     soup = getSoup(URL, proxies)
     results = getResults(soup, "xdaq-main")
-    #tables = getElements(results, "table", "pixel-tab-table")
     tables = getElements(results, "table", "pixel-item-table xdaq-table")
-    #tables = getElements(results, "table", "xdaq-table tcds-item-table sortable pixelmonitor-table-compact")
-    #tables = results.find_all("table", id="pixelFedTable")
     n_tables = len(tables)
 
     data = []
@@ -48,7 +45,25 @@ def getPageInfo(URL, proxies):
 
     print("Number of tables: {0}".format(n_tables))
 
-    #print(data)
+
+# id = "pixfedTable"
+# class = "xdaq-table tcds-item-table sortable pixelmonitor-table-compact"
+def getFEDErrorInfo(URL, proxies):
+    soup = getSoup(URL, proxies)
+    results = getResults(soup, "xdaq-main")
+    tables = getElements(results, "table", "pixel-tab-table")
+    n_tables = len(tables)
+    print("Number of tables: {0}".format(n_tables))
+
+    i = 0
+    for table in tables:
+        title = table.find("p", class_="tcds-item-table-title")
+        description = table.find("p", class_="tcds-item-table-description")
+        fed_error_table = table.find("table", class_="xdaq-table tcds-item-table sortable pixelmonitor-table-compact")
+        if title:
+            print("i = {0}; title = {1}, description = {2}".format(i, title.text, description.text))
+            print(fed_error_table)
+        i += 1
 
 def main():
     URL = "http://srv-s2b18-37-01.cms:1971/urn:xdaq-application:lid=71"
@@ -56,7 +71,8 @@ def main():
         "http" : "socks5h://127.0.0.1:1030",
         "https": "socks5h://127.0.0.1:1030"
     }
-    getPageInfo(URL, proxies)
+    #getFEDStatusInfo(URL, proxies)
+    getFEDErrorInfo(URL, proxies)
 
 if __name__ == "__main__":
     main()
