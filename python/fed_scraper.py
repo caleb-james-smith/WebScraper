@@ -80,8 +80,21 @@ def test(URL, proxies):
     results = getResults(soup, "xdaq-main")
     tables = results.find_all("table")
     n_tables = len(tables)
-    print(tables)
-    print("Number of tables: {0}".format(n_tables))
+    n_matches = 0
+    pattern = "pixfedTable" 
+    
+    print("Number of total tables: {0}".format(n_tables))
+
+    for table in tables:
+        table_html = str(table)
+        if pattern in table_html:
+            table_soup = BeautifulSoup(table_html, "html.parser")
+            parsed = table_soup.find_all("div", attrs={"class":"tcds-item-table-wrapper"})
+            print("Length of parsed list: {0}".format(len(parsed)))
+            print(str(parsed[0]))
+            n_matches += 1
+    
+    print("Number of matches to '{0}': {1}".format(pattern, n_matches))
 
 def main():
     URL = "http://srv-s2b18-37-01.cms:1971/urn:xdaq-application:lid=71"
@@ -96,4 +109,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
