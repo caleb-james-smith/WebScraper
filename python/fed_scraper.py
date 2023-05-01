@@ -11,6 +11,7 @@
 
 import requests
 from bs4 import BeautifulSoup
+import re
 
 def getSoup(URL, proxies):
     page = requests.get(URL, proxies=proxies)
@@ -25,6 +26,7 @@ def getElements(results, tag, class_name):
     elements = results.find_all(tag, class_=class_name)
     return elements
 
+# Gett FED status info
 def getFEDStatusInfo(URL, proxies):
     soup = getSoup(URL, proxies)
     results = getResults(soup, "xdaq-main")
@@ -42,13 +44,12 @@ def getFEDStatusInfo(URL, proxies):
             data.append([element for element in columns if element])
             for entry in columns:
                 print(entry)
+        print("-----------------------------------------------")
 
     print("Number of tables: {0}".format(n_tables))
 
-
-# id = "pixfedTable"
-# class = "xdaq-table tcds-item-table sortable pixelmonitor-table-compact"
-def getFEDErrorInfo(URL, proxies):
+# Example: get FED status info
+def getFEDErrorInfoExample(URL, proxies):
     soup = getSoup(URL, proxies)
     results = getResults(soup, "xdaq-main")
     tables = getElements(results, "table", "pixel-tab-table")
@@ -61,9 +62,78 @@ def getFEDErrorInfo(URL, proxies):
         description = table.find("p", class_="tcds-item-table-description")
         if title:
             print("i = {0}; title = {1}, description = {2}".format(i, title.text, description.text))
+            #print(table)
         i += 1
 
-def testTables(URL, proxies):
+# Get FED error tables
+def getFEDErrorTables(URL, proxies):
+    soup = getSoup(URL, proxies)
+    results = getResults(soup, "xdaq-main")
+    tables = results.find_all("table")
+    n_tables = len(tables)
+    n_matches = 0
+    pattern = "pixfedTable" 
+    output = []
+    
+    #print("Number of total tables: {0}".format(n_tables))
+
+    for table in tables:
+        table_html = str(table)
+        if pattern in table_html:
+            table_soup = BeautifulSoup(table_html, "html.parser")
+            parsed = table_soup.find_all("div", attrs={"class":"tcds-item-table-wrapper"})
+            #print("Length of parsed list: {0}".format(len(parsed)))
+            #print(str(parsed[0]))
+            for x in parsed:
+                output.append(str(x))
+
+            n_matches += 1
+    
+    #print("Number of matches to '{0}': {1}".format(pattern, n_matches))
+    #print("Length of output: {0}".format(len(output)))
+
+    return output
+
+def processTableList(table_list):
+    # print the first element to see an example:
+    #print(table_list[0])
+    printHead = True
+    printBody = True
+    for table_html in table_list:
+        table_head = getHTMLSection(table_html, "thead")
+        table_body = getHTMLSection(table_html, "tbody")
+        if printHead:
+            print(table_head)
+        if printBody:
+            print(table_body)
+    return
+
+# Get section from HTML; assume exactly two matches to tag.
+def getHTMLSection(html, tag):
+    verbose = False
+    required_positions = 2
+    positions   = [m.start() for m in re.finditer(tag, html)]
+    n_positions = len(positions)
+
+    # check for the required number of positions
+    if n_positions != required_positions:
+        print("WARNING: There are {0} positions, but there should be {1} positions.".format(n_positions, required_positions))
+    
+    # get HTML section using tag positions
+    start   = positions[0] - 1
+    end     = positions[1] + len(tag) + 1
+    html_section = html[start:end]
+    
+    if verbose:
+        print("tag = {0}, start = {1}, end = {2}".format(tag, start, end))
+    
+    return html_section
+
+def getFEDErrorInfo(URL, proxies):
+    table_list = getFEDErrorTables(URL, proxies)
+    processTableList(table_list)
+
+def showTableClasses(URL, proxies):
     soup = getSoup(URL, proxies)
     tables = soup.find_all("table")
     n_tables = len(tables)
@@ -75,27 +145,6 @@ def testTables(URL, proxies):
 
     print("Number of tables: {0}".format(n_tables))
 
-def test(URL, proxies):
-    soup = getSoup(URL, proxies)
-    results = getResults(soup, "xdaq-main")
-    tables = results.find_all("table")
-    n_tables = len(tables)
-    n_matches = 0
-    pattern = "pixfedTable" 
-    
-    print("Number of total tables: {0}".format(n_tables))
-
-    for table in tables:
-        table_html = str(table)
-        if pattern in table_html:
-            table_soup = BeautifulSoup(table_html, "html.parser")
-            parsed = table_soup.find_all("div", attrs={"class":"tcds-item-table-wrapper"})
-            print("Length of parsed list: {0}".format(len(parsed)))
-            print(str(parsed[0]))
-            n_matches += 1
-    
-    print("Number of matches to '{0}': {1}".format(pattern, n_matches))
-
 def main():
     URL = "http://srv-s2b18-37-01.cms:1971/urn:xdaq-application:lid=71"
     proxies = {
@@ -103,9 +152,9 @@ def main():
         "https": "socks5h://127.0.0.1:1030"
     }
     #getFEDStatusInfo(URL, proxies)
-    #getFEDErrorInfo(URL, proxies)
-    #testTables(URL, proxies)
-    test(URL, proxies)
+    #getFEDErrorInfoExample(URL, proxies)
+    #showTableClasses(URL, proxies)
+    getFEDErrorInfo(URL, proxies)
 
 if __name__ == "__main__":
     main()
