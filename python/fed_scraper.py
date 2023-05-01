@@ -13,24 +13,39 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
+def printLine():
+    print("--------------------------------------------------")
+
+# Load content from URL using proxies
 def getSoup(URL, proxies):
-    page = requests.get(URL, proxies=proxies)
-    soup = BeautifulSoup(page.content, "html.parser")
+    soup = None
+    try:
+        page = requests.get(URL, proxies=proxies)
+        soup = BeautifulSoup(page.content, "html.parser")
+    except:
+        printLine()
+        print("ERROR:")
+        print("    Failed to get data from '{0}'".format(URL))
+        print("    using these proxies: {0}.".format(proxies))
+        print("Make sure that you are running an ssh tunnel with port forwarding to access this site.")
+        printLine()
     return soup
 
-def getResults(soup, id_name):
+# Search based on ID
+def getIDMatches(soup, id_name):
     results = soup.find(id=id_name)
     return results
 
-def getElements(results, tag, class_name):
+# Search based on tag and class
+def getClassMatches(results, tag, class_name):
     elements = results.find_all(tag, class_=class_name)
     return elements
 
 # Gett FED status info
 def getFEDStatusInfo(URL, proxies):
     soup = getSoup(URL, proxies)
-    results = getResults(soup, "xdaq-main")
-    tables = getElements(results, "table", "pixel-item-table xdaq-table")
+    results = getIDMatches(soup, "xdaq-main")
+    tables = getClassMatches(results, "table", "pixel-item-table xdaq-table")
     n_tables = len(tables)
 
     data = []
@@ -44,15 +59,15 @@ def getFEDStatusInfo(URL, proxies):
             data.append([element for element in columns if element])
             for entry in columns:
                 print(entry)
-        print("-----------------------------------------------")
+        printLine()
 
     print("Number of tables: {0}".format(n_tables))
 
 # Example: get FED status info
 def getFEDErrorInfoExample(URL, proxies):
     soup = getSoup(URL, proxies)
-    results = getResults(soup, "xdaq-main")
-    tables = getElements(results, "table", "pixel-tab-table")
+    results = getIDMatches(soup, "xdaq-main")
+    tables = getClassMatches(results, "table", "pixel-tab-table")
     n_tables = len(tables)
     print("Number of tables: {0}".format(n_tables))
 
@@ -68,7 +83,7 @@ def getFEDErrorInfoExample(URL, proxies):
 # Get FED error tables
 def getFEDErrorTables(URL, proxies):
     soup = getSoup(URL, proxies)
-    results = getResults(soup, "xdaq-main")
+    results = getIDMatches(soup, "xdaq-main")
     tables = results.find_all("table")
     n_tables = len(tables)
     n_matches = 0
