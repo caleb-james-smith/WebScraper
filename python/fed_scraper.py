@@ -41,8 +41,14 @@ def getClassMatches(results, tag, class_name):
     elements = results.find_all(tag, class_=class_name)
     return elements
 
+# Get list of FEDs from data
+def getFEDs(data):
+    FEDs = [x for x in data if "FED ID" in x]
+    return FEDs
+
 # Gett FED status info
 def getFEDStatusInfo(URL, proxies):
+    verbose = False
     soup = getSoup(URL, proxies)
     results = getIDMatches(soup, "xdaq-main")
     tables = getClassMatches(results, "table", "pixel-item-table xdaq-table")
@@ -56,12 +62,18 @@ def getFEDStatusInfo(URL, proxies):
         for row in rows:
             columns = row.find_all("td")
             columns = [element.get_text(separator=": ", strip=True) for element in columns]
-            data.append([element for element in columns if element])
+            #data.append([element for element in columns if element])
             for entry in columns:
-                print(entry)
-        printLine()
+                if entry:
+                    data.append(entry)
+                if verbose:
+                    print(entry)
+        if verbose:
+            printLine()
 
     print("Number of tables: {0}".format(n_tables))
+    
+    return data
 
 # Example: get FED status info
 def getFEDErrorInfoExample(URL, proxies):
@@ -166,10 +178,10 @@ def main():
         "http" : "socks5h://127.0.0.1:1030",
         "https": "socks5h://127.0.0.1:1030"
     }
-    #getFEDStatusInfo(URL, proxies)
+    getFEDStatusInfo(URL, proxies)
     #getFEDErrorInfoExample(URL, proxies)
     #showTableClasses(URL, proxies)
-    getFEDErrorInfo(URL, proxies)
+    #getFEDErrorInfo(URL, proxies)
 
 if __name__ == "__main__":
     main()
