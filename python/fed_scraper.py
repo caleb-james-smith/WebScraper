@@ -16,6 +16,15 @@ import re
 def printLine():
     print("--------------------------------------------------")
 
+# Get int from string; assume exactly one int in string
+def getIntFromString(input_string):
+    match = re.search(r'\d+', input_string)
+    # Check for match
+    if match:
+        return int(match.group())
+    else:
+        return -999
+
 # Load content from URL using proxies
 def getSoup(URL, proxies):
     soup = None
@@ -43,7 +52,12 @@ def getClassMatches(results, tag, class_name):
 
 # Get list of FEDs from data
 def getFEDs(data):
-    FEDs = [x for x in data if "FED ID" in x]
+    FEDs = []
+    for x in data:
+        if "FED ID" in x:
+            FED = getIntFromString(x)
+            if FED >= 0:
+                FEDs.append(FED)
     return FEDs
 
 # Gett FED status info
