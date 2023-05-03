@@ -2,7 +2,7 @@
 
 # https://twiki.cern.ch/twiki/bin/viewauth/CMS/PixelInfrastructure
 
-from fed_scraper import getFEDStatusInfo, getFEDs, getIntValues
+from fed_scraper import getFEDStatusInfo, getFEDs, getIntValues, addFEDs, addValues
 
 def run():
     print("Running")
@@ -27,37 +27,47 @@ def run():
         12 : "http://srv-s2b18-28-01.cms:1971/urn:xdaq-application:lid=82",
     }
 
+    fed_data = {}
+
     FEDs = []
-    FEDStructure = []
-    EventErrorStructure = []
+    FED_ID = []
+    Event_Errors = []
+
+    key_FED_ID = "FED ID"
+    key_Event_Errors = "Event errors"
 
     for key in FEDSupervisorURLs:
         URL = FEDSupervisorURLs[key]
         data = getFEDStatusInfo(URL, proxies)
         
-        fed_list = getFEDs(data)
-        FEDs += fed_list
+        values = getFEDs(data)
+        FEDs += values
         
-        fed_structure = getIntValues(data, "FED ID")
-        FEDStructure += fed_structure
+        values = getIntValues(data, key_FED_ID)
+        FED_ID += values
         
-        event_error_structure = getIntValues(data, "Event errors")
-        EventErrorStructure += event_error_structure
+        values = getIntValues(data, key_Event_Errors)
+        Event_Errors += values
 
     FEDs.sort()
     n_FEDs = len(FEDs)
-    n_FEDStructure = len(FEDStructure)
-    n_EventErrorStructure = len(EventErrorStructure)
+    n_FED_ID = len(FED_ID)
+    n_Event_Errors = len(Event_Errors)
 
-    #for FED in FEDs:
-    #    print("FED {0}".format(FED))
+    addFEDs(fed_data, FEDs)
+    addValues(fed_data, key_Event_Errors, FED_ID, Event_Errors)
 
-    print(FEDs)
-    print(FEDStructure)
-    print(EventErrorStructure)
+    for FED in FEDs:
+        FED_Event_Errors = fed_data[FED][key_Event_Errors]
+        print("FED {0}, {1}: {2}".format(FED, key_Event_Errors, FED_Event_Errors))
+
+    #print(FEDs)
+    #print(FED_ID)
+    #print(Event_Errors)
     print("Number of FEDs: {0}".format(n_FEDs))
-    print("Number of FEDStructure: {0}".format(n_FEDStructure))
-    print("Number of EventErrorStructure: {0}".format(n_EventErrorStructure))
+    print("Number of FED_ID: {0}".format(n_FED_ID))
+    print("Number of Event_Errors: {0}".format(n_Event_Errors))
+
 
 def main():
     run()
