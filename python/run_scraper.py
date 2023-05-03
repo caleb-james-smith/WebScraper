@@ -26,8 +26,10 @@ def run():
         11 : "http://srv-s2b18-29-01.cms:1971/urn:xdaq-application:lid=81",
         12 : "http://srv-s2b18-28-01.cms:1971/urn:xdaq-application:lid=82",
     }
+
     FEDs = []
-    CheckFEDs = []
+    FEDStructure = []
+    EventErrorStructure = []
 
     for key in FEDSupervisorURLs:
         URL = FEDSupervisorURLs[key]
@@ -36,20 +38,26 @@ def run():
         fed_list = getFEDs(data)
         FEDs += fed_list
         
-        check_fed_list = getIntValues(data, "FED ID")
-        CheckFEDs += check_fed_list
+        fed_structure = getIntValues(data, "FED ID")
+        FEDStructure += fed_structure
+        
+        event_error_structure = getIntValues(data, "Event errors")
+        EventErrorStructure += event_error_structure
 
     FEDs.sort()
     n_FEDs = len(FEDs)
-    n_CheckFEDs = len(CheckFEDs)
+    n_FEDStructure = len(FEDStructure)
+    n_EventErrorStructure = len(EventErrorStructure)
 
     #for FED in FEDs:
     #    print("FED {0}".format(FED))
 
     print(FEDs)
-    print(CheckFEDs)
+    print(FEDStructure)
+    print(EventErrorStructure)
     print("Number of FEDs: {0}".format(n_FEDs))
-    print("Number of CheckFEDs: {0}".format(n_CheckFEDs))
+    print("Number of FEDStructure: {0}".format(n_FEDStructure))
+    print("Number of EventErrorStructure: {0}".format(n_EventErrorStructure))
 
 def main():
     run()
