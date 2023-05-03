@@ -37,9 +37,9 @@ def getSimpleMap(fed_data, data_key):
     return simple_map
 
 # sort based on values
-def getSortedMap(fed_data, data_key):
+def getSortedMap(fed_data, data_key, reverse):
     simple_map = getSimpleMap(fed_data, data_key)
-    sorted_map = {k: v for k, v in sorted(simple_map.items(), key=lambda item: item[1])}
+    sorted_map = {k: v for k, v in sorted(simple_map.items(), key=lambda item: item[1], reverse=reverse)}
     print("simple_map: {0}".format(simple_map))
     print("sorted_map: {0}".format(sorted_map))
     return sorted_map
@@ -78,7 +78,7 @@ def runScraper():
 
     addFEDs(fed_data, FEDs)
     addValues(fed_data, key_Event_Errors, FED_ID, Event_Errors)
-    sortedByErrors = getSortedMap(fed_data, key_Event_Errors)
+    sortedByErrors = getSortedMap(fed_data, key_Event_Errors, True)
 
     # print FEDs and errors; sorted by FEDs
     #for FED in FEDs:
