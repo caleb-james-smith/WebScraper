@@ -32,6 +32,18 @@ def getFEDSupervisorURLs():
     }
     return FEDSupervisorURLs
 
+def getSimpleMap(fed_data, data_key):
+    simple_map = {k: v[data_key] for k, v in fed_data.items()}
+    return simple_map
+
+# sort based on values
+def getSortedMap(fed_data, data_key):
+    simple_map = getSimpleMap(fed_data, data_key)
+    sorted_map = {k: v for k, v in sorted(simple_map.items(), key=lambda item: item[1])}
+    print("simple_map: {0}".format(simple_map))
+    print("sorted_map: {0}".format(sorted_map))
+    return sorted_map
+
 def runScraper():
     print("Running scraper.")
 
@@ -66,10 +78,17 @@ def runScraper():
 
     addFEDs(fed_data, FEDs)
     addValues(fed_data, key_Event_Errors, FED_ID, Event_Errors)
+    sortedByErrors = getSortedMap(fed_data, key_Event_Errors)
 
-    for FED in FEDs:
-        FED_Event_Errors = fed_data[FED][key_Event_Errors]
-        print("FED {0}, {1}: {2}".format(FED, key_Event_Errors, FED_Event_Errors))
+    # print FEDs and errors; sorted by FEDs
+    #for FED in FEDs:
+    #    FED_Event_Errors = fed_data[FED][key_Event_Errors]
+    #    print("FED {0}, {1}: {2}".format(FED, key_Event_Errors, FED_Event_Errors))
+    
+    # print FEDs and errors; sorted by errors
+    for FED in sortedByErrors:
+        errors = sortedByErrors[FED]
+        print("FED {0}, {1}: {2}".format(FED, key_Event_Errors, errors))
 
     #print(FEDs)
     #print(FED_ID)
