@@ -36,6 +36,6 @@ for example http://srv-s2b18-37-01.cms:1971/urn:xdaq-application:lid=71.
 
 Then run the PixelFEDSupervisor scraper:
 ```
-python3 python/fed_scraper.py
+python3 python/run_scraper.py
 ```
 
