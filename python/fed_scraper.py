@@ -59,7 +59,7 @@ def getFEDs(data):
             if FED >= 0:
                 FEDs.append(FED)
             else:
-                print("WARNING: In getFEDs(), FED ID '{0}' is not >= 0.".format(FED))
+                print("WARNING: In getFEDs(), FED ID = {0} is less than 0.".format(FED))
     return FEDs
 
 # Get list of integer values from data for a given string pattern
@@ -72,7 +72,7 @@ def getIntValues(data, pattern):
             value = getIntFromString(x)
             values.append(value)
             if value < 0:
-                print("WARNING: In getIntValues(), '{0}' '{1}' is < 0.".format(pattern, value))
+                print("WARNING: In getIntValues(), {0} = {1} is less than 0.".format(pattern, value))
     return values
 
 # Add FEDs to data map
@@ -86,13 +86,13 @@ def addValues(fed_data, key, FED_ID, values):
     n_FED_ID = len(FED_ID)
     n_values = len(values)
     if n_FED_ID != n_values:
-        print("ERROR: FED_ID length ({0}) and values ({1}) are not equal.".format(n_FED_ID, n_values))
+        print("ERROR: FED_ID length ({0}) and values length ({1}) are not equal.".format(n_FED_ID, n_values))
         return
     for i, FED in enumerate(FED_ID):
         value = values[i]
         if FED >= 0:
             if value < 0:
-                print("WARNING: In addValues(), for key '{0}', value '{1}' is < 0.".format(key, value))
+                print("WARNING: In addValues(), for key '{0}', value '{1}' is less than 0.".format(key, value))
             if FED in fed_data:
                 fed_data[FED][key] = value
             else:
@@ -123,7 +123,8 @@ def getFEDStatusInfo(URL, proxies):
         if verbose:
             printLine()
 
-    print("Number of tables: {0}".format(n_tables))
+    if verbose:
+        print("Number of tables: {0}".format(n_tables))
     
     return data
 
