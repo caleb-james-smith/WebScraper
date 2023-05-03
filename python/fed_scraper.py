@@ -16,6 +16,15 @@ import re
 def printLine():
     print("--------------------------------------------------")
 
+# Get int from string; assume exactly one int in string
+def getIntFromString(input_string):
+    match = re.search(r'\d+', input_string)
+    # Check for match
+    if match:
+        return int(match.group())
+    else:
+        return -999
+
 # Load content from URL using proxies
 def getSoup(URL, proxies):
     soup = None
@@ -41,8 +50,57 @@ def getClassMatches(results, tag, class_name):
     elements = results.find_all(tag, class_=class_name)
     return elements
 
+# Get list of FEDs from data
+def getFEDs(data):
+    FEDs = []
+    for x in data:
+        if "FED ID" in x:
+            FED = getIntFromString(x)
+            if FED >= 0:
+                FEDs.append(FED)
+            else:
+                print("WARNING: In getFEDs(), FED ID = {0} is less than 0.".format(FED))
+    return FEDs
+
+# Get list of integer values from data for a given string pattern
+# Assume unique patterns
+# Include all values (even less than 0) as place holders for missing values
+def getIntValues(data, pattern):
+    values = []
+    for x in data:
+        if pattern in x:
+            value = getIntFromString(x)
+            values.append(value)
+            if value < 0:
+                print("WARNING: In getIntValues(), {0} = {1} is less than 0.".format(pattern, value))
+    return values
+
+# Add FEDs to data map
+def addFEDs(fed_data, FEDs):
+    for FED in FEDs:
+        fed_data[FED] = {}
+
+# Add values to data map
+# Assume that FED_ID and values have the same length
+def addValues(fed_data, key, FED_ID, values):
+    n_FED_ID = len(FED_ID)
+    n_values = len(values)
+    if n_FED_ID != n_values:
+        print("ERROR: FED_ID length ({0}) and values length ({1}) are not equal.".format(n_FED_ID, n_values))
+        return
+    for i, FED in enumerate(FED_ID):
+        value = values[i]
+        if FED >= 0:
+            if value < 0:
+                print("WARNING: In addValues(), for key '{0}', value '{1}' is less than 0.".format(key, value))
+            if FED in fed_data:
+                fed_data[FED][key] = value
+            else:
+                print("ERROR: The FED {0} is not in fed_data.".format(FED))
+
 # Gett FED status info
 def getFEDStatusInfo(URL, proxies):
+    verbose = False
     soup = getSoup(URL, proxies)
     results = getIDMatches(soup, "xdaq-main")
     tables = getClassMatches(results, "table", "pixel-item-table xdaq-table")
@@ -56,12 +114,19 @@ def getFEDStatusInfo(URL, proxies):
         for row in rows:
             columns = row.find_all("td")
             columns = [element.get_text(separator=": ", strip=True) for element in columns]
-            data.append([element for element in columns if element])
+            #data.append([element for element in columns if element])
             for entry in columns:
-                print(entry)
-        printLine()
+                if entry:
+                    data.append(entry)
+                if verbose:
+                    print(entry)
+        if verbose:
+            printLine()
 
-    print("Number of tables: {0}".format(n_tables))
+    if verbose:
+        print("Number of tables: {0}".format(n_tables))
+    
+    return data
 
 # Example: get FED status info
 def getFEDErrorInfoExample(URL, proxies):
@@ -166,10 +231,10 @@ def main():
         "http" : "socks5h://127.0.0.1:1030",
         "https": "socks5h://127.0.0.1:1030"
     }
-    #getFEDStatusInfo(URL, proxies)
+    getFEDStatusInfo(URL, proxies)
     #getFEDErrorInfoExample(URL, proxies)
     #showTableClasses(URL, proxies)
-    getFEDErrorInfo(URL, proxies)
+    #getFEDErrorInfo(URL, proxies)
 
 if __name__ == "__main__":
     main()
