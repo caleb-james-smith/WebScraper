@@ -2,7 +2,7 @@
 
 # https://twiki.cern.ch/twiki/bin/viewauth/CMS/PixelInfrastructure
 
-from fed_scraper import getFEDStatusInfo, getFEDs
+from fed_scraper import getFEDStatusInfo, getFEDs, getIntValues
 
 def run():
     print("Running")
@@ -27,18 +27,29 @@ def run():
         12 : "http://srv-s2b18-28-01.cms:1971/urn:xdaq-application:lid=82",
     }
     FEDs = []
+    CheckFEDs = []
 
     for key in FEDSupervisorURLs:
         URL = FEDSupervisorURLs[key]
         data = getFEDStatusInfo(URL, proxies)
+        
         fed_list = getFEDs(data)
         FEDs += fed_list
+        
+        check_fed_list = getIntValues(data, "FED ID")
+        CheckFEDs += check_fed_list
 
     FEDs.sort()
     n_FEDs = len(FEDs)
-    for FED in FEDs:
-        print("FED {0}".format(FED))
+    n_CheckFEDs = len(CheckFEDs)
+
+    #for FED in FEDs:
+    #    print("FED {0}".format(FED))
+
+    print(FEDs)
+    print(CheckFEDs)
     print("Number of FEDs: {0}".format(n_FEDs))
+    print("Number of CheckFEDs: {0}".format(n_CheckFEDs))
 
 def main():
     run()

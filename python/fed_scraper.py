@@ -58,7 +58,22 @@ def getFEDs(data):
             FED = getIntFromString(x)
             if FED >= 0:
                 FEDs.append(FED)
+            else:
+                print("WARNING: In getFEDs(), FED ID '{0}' is not >= 0.".format(FED))
     return FEDs
+
+# Get list of integer values from data for a given string pattern
+# Assume unique patterns
+# Include all values (even less than 0) as place holders for missing values
+def getIntValues(data, pattern):
+    values = []
+    for x in data:
+        if pattern in x:
+            value = getIntFromString(x)
+            values.append(value)
+            if value < 0:
+                print("WARNING: In getIntValues(), '{0}' '{1}' is not >= 0.".format(pattern, value))
+    return values
 
 # Gett FED status info
 def getFEDStatusInfo(URL, proxies):
