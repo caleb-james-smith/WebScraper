@@ -7,29 +7,46 @@ from fed_scraper import getFEDStatusInfo, getFEDs, getIntValues, addFEDs, addVal
 def getProxies():
     # Proxies for SOCKS5
     # Use localhost (127.0.0.1) and the port that you are forwarding
+    
+    # CMS P5
+    #proxies = {
+    #    "http" : "socks5h://127.0.0.1:1030",
+    #    "https": "socks5h://127.0.0.1:1030"
+    #}
+    
+    # fpixp1hc
     proxies = {
-        "http" : "socks5h://127.0.0.1:1030",
-        "https": "socks5h://127.0.0.1:1030"
+        "http" : "socks5h://127.0.0.1:1040",
+        "https": "socks5h://127.0.0.1:1040"
     }
+    
     return proxies
 
 def getFEDSupervisorURLs():
     # See the list of FEDSupervisor URLs here:
     # https://twiki.cern.ch/twiki/bin/view/CMS/PixelInfrastructure
+    
+    # CMS P5
+    #FEDSupervisorURLs = {
+    #    1  : "http://srv-s2b18-37-01.cms:1971/urn:xdaq-application:lid=71",
+    #    2  : "http://srv-s2b18-34-01.cms:1971/urn:xdaq-application:lid=72",
+    #    3  : "http://srv-s2b18-33-01.cms:1971/urn:xdaq-application:lid=73",
+    #    4  : "http://srv-s2b18-32-01.cms:1971/urn:xdaq-application:lid=74",
+    #    5  : "http://srv-s2b18-41-01.cms:1971/urn:xdaq-application:lid=75",
+    #    6  : "http://srv-s2b18-40-01.cms:1971/urn:xdaq-application:lid=76",
+    #    7  : "http://srv-s2b18-39-01.cms:1971/urn:xdaq-application:lid=77",
+    #    8  : "http://srv-s2b18-38-01.cms:1971/urn:xdaq-application:lid=78",
+    #    9  : "http://srv-s2b18-31-01.cms:1971/urn:xdaq-application:lid=79",
+    #    10 : "http://srv-s2b18-30-01.cms:1971/urn:xdaq-application:lid=80",
+    #    11 : "http://srv-s2b18-29-01.cms:1971/urn:xdaq-application:lid=81",
+    #    12 : "http://srv-s2b18-28-01.cms:1971/urn:xdaq-application:lid=82",
+    #}
+    
+    # fpixp1hc
     FEDSupervisorURLs = {
-        1  : "http://srv-s2b18-37-01.cms:1971/urn:xdaq-application:lid=71",
-        2  : "http://srv-s2b18-34-01.cms:1971/urn:xdaq-application:lid=72",
-        3  : "http://srv-s2b18-33-01.cms:1971/urn:xdaq-application:lid=73",
-        4  : "http://srv-s2b18-32-01.cms:1971/urn:xdaq-application:lid=74",
-        5  : "http://srv-s2b18-41-01.cms:1971/urn:xdaq-application:lid=75",
-        6  : "http://srv-s2b18-40-01.cms:1971/urn:xdaq-application:lid=76",
-        7  : "http://srv-s2b18-39-01.cms:1971/urn:xdaq-application:lid=77",
-        8  : "http://srv-s2b18-38-01.cms:1971/urn:xdaq-application:lid=78",
-        9  : "http://srv-s2b18-31-01.cms:1971/urn:xdaq-application:lid=79",
-        10 : "http://srv-s2b18-30-01.cms:1971/urn:xdaq-application:lid=80",
-        11 : "http://srv-s2b18-29-01.cms:1971/urn:xdaq-application:lid=81",
-        12 : "http://srv-s2b18-28-01.cms:1971/urn:xdaq-application:lid=82",
+        1 : "http://fpixp1hc.cern.ch:1973/urn:xdaq-application:lid=70",
     }
+    
     return FEDSupervisorURLs
 
 def getSimpleMap(fed_data, data_key):
