@@ -9,16 +9,16 @@ def getProxies():
     # Use localhost (127.0.0.1) and the port that you are forwarding
     
     # CMS P5
-    #proxies = {
-    #    "http" : "socks5h://127.0.0.1:1030",
-    #    "https": "socks5h://127.0.0.1:1030"
-    #}
+    proxies = {
+        "http" : "socks5h://127.0.0.1:1030",
+        "https": "socks5h://127.0.0.1:1030"
+    }
     
     # fpixp1hc
-    proxies = {
-        "http" : "socks5h://127.0.0.1:1040",
-        "https": "socks5h://127.0.0.1:1040"
-    }
+    #proxies = {
+    #    "http" : "socks5h://127.0.0.1:1040",
+    #    "https": "socks5h://127.0.0.1:1040"
+    #}
     
     return proxies
 
