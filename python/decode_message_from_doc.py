@@ -10,8 +10,13 @@ def decodeMessageFromDoc(URL):
     page = requests.get(URL)
     soup = BeautifulSoup(page.content, "html.parser")
     table = getTable(soup)
+
     # print(table.prettify())
     printTable(table)
+    character_column = 1
+    data = getData(table, character_column)
+    for row in data:
+        print(row)
 
 def getTable(soup):
     tables = soup.find_all("table")
@@ -35,6 +40,28 @@ def printTable(table):
             entry = span.text.strip()
             print("{0}, ".format(entry), end='')
         print()
+
+def getData(table, character_column):
+    data = []
+    rows = table.find_all("tr")
+    for i, row in enumerate(rows):
+        # Skip first row (headers)
+        if i == 0:
+            continue
+        
+        data_row = []
+
+        spans = row.find_all("span")
+        for j, span in enumerate(spans):
+            entry = span.text.strip()
+            # Convert coordinates to integer
+            if j != character_column:
+                entry = int(entry)
+            data_row.append(entry)
+
+        data.append(data_row)
+    
+    return data
 
 if __name__ == "__main__":
     main()
