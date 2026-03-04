@@ -15,37 +15,44 @@ def main():
     decodeMessageFromDoc(URL)
 
 def decodeMessageFromDoc(URL):
+    verbose = False
+
     # Check for empty URL
     if not URL:
         print("Error: The URL is empty.")
         sys.exit(1)
 
-    page = requests.get(URL)
-    soup = BeautifulSoup(page.content, "html.parser")
-    table = getTable(soup)
+    table = getTable(URL)
 
-    # print(table.prettify())
-    printTable(table)
+    if verbose:
+        # print(table.prettify())
+        printTable(table)
+    
     character_column = 1
     data = getData(table, character_column)
-    for row in data:
-        print(row)
+    if verbose:
+        for row in data:
+            print(row)
     
     max_x, max_y = getMaxXY(data)
-    print(f"max_x: {max_x}")
-    print(f"max_y: {max_y}")
+    if verbose:
+        print(f"max_x: {max_x}")
+        print(f"max_y: {max_y}")
 
     size_x = max_x + 1
     size_y = max_y + 1
     character = ' '
     grid = createGrid(size_x, size_y, character)
     assignCharacters(grid, data, character_column)
-    for row in grid:
-        print(row)
+    if verbose:
+        for row in grid:
+            print(row)
 
     printGrid(grid)
 
-def getTable(soup):
+def getTable(URL):
+    page = requests.get(URL)
+    soup = BeautifulSoup(page.content, "html.parser")
     tables = soup.find_all("table")
     n_tables = len(tables)
 
