@@ -3,10 +3,23 @@ import requests
 import sys
 
 def main():
+    # Empty URL
+    # URL = ""
+    
+    # Example input data
     URL = "https://docs.google.com/document/d/e/2PACX-1vTMOmshQe8YvaRXi6gEPKKlsC6UpFJSMAk4mQjLm_u1gmHdVVTaeh7nBNFBRlui0sTZ-snGwZM4DBCT/pub"
+    
+    # Assignment input data
+    # URL = "https://docs.google.com/document/d/e/2PACX-1vQiVT_Jj04V35C-YRzvoqyEYYzdXHcRyMUZCVQRYCu6gQJX7hbNhJ5eFCMuoX47cAsDW2ZBYppUQITr/pub"
+    
     decodeMessageFromDoc(URL)
 
 def decodeMessageFromDoc(URL):
+    # Check for empty URL
+    if not URL:
+        print("Error: The URL is empty.")
+        sys.exit(1)
+
     page = requests.get(URL)
     soup = BeautifulSoup(page.content, "html.parser")
     table = getTable(soup)
@@ -29,6 +42,8 @@ def decodeMessageFromDoc(URL):
     assignCharacters(grid, data, character_column)
     for row in grid:
         print(row)
+
+    printGrid(grid)
 
 def getTable(soup):
     tables = soup.find_all("table")
@@ -98,6 +113,18 @@ def assignCharacters(grid, data, character_column):
         y = row[-1]
         character = row[character_column]
         grid[x][y] = character
+
+def printGrid(grid):
+    # Get size of grid
+    size_x = len(grid)
+    size_y = len(grid[0])
+    # Iterate over y values in descending order
+    for j in range(size_y - 1, -1, -1):
+        # Iterate over x values in ascending order
+        for i in range(size_x):
+            character = grid[i][j]
+            print(character, end='')
+        print()
 
 if __name__ == "__main__":
     main()
