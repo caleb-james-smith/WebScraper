@@ -17,6 +17,18 @@ def decodeMessageFromDoc(URL):
     data = getData(table, character_column)
     for row in data:
         print(row)
+    
+    max_x, max_y = getMaxXY(data)
+    print(f"max_x: {max_x}")
+    print(f"max_y: {max_y}")
+
+    size_x = max_x + 1
+    size_y = max_y + 1
+    character = ' '
+    grid = createGrid(size_x, size_y, character)
+    assignCharacters(grid, data, character_column)
+    for row in grid:
+        print(row)
 
 def getTable(soup):
     tables = soup.find_all("table")
@@ -62,6 +74,30 @@ def getData(table, character_column):
         data.append(data_row)
     
     return data
+
+def getMaxXY(data):
+    x_values = []
+    y_values = []
+    for row in data:
+        x_values.append(row[0])
+        y_values.append(row[-1])
+    max_x = max(x_values)
+    max_y = max(y_values)
+    return [max_x, max_y]
+
+def createGrid(size_x, size_y, character):
+    grid = []
+    for i in range(size_x):
+        row = size_y * [character]
+        grid.append(row)
+    return grid
+
+def assignCharacters(grid, data, character_column):
+    for row in data:
+        x = row[0]
+        y = row[-1]
+        character = row[character_column]
+        grid[x][y] = character
 
 if __name__ == "__main__":
     main()
